@@ -1,0 +1,52 @@
+etcd_discovery_token:
+etcd_client_endpoints: []
+
+etcd_peer_address: 0.0.0.0
+etcd_advertise_peer_address: '{{ ansible_default_ipv4["address"] }}'
+etcd_peer_cert_overwrite: False
+etcd_peer_config:
+etcd_peer_ca_cert:
+etcd_peer_ca_key:
+etcd_peer_ca_config:
+  signing:
+    default:
+      expiry: 43800h
+      usages:
+        - signing
+        - key encipherment
+        - server auth
+        - client auth
+
+etcd_client_address: 0.0.0.0
+etcd_advertise_client_address: '{{ ansible_default_ipv4["address"] }}'
+etcd_client_cert_overwrite: False
+etcd_client_config:
+etcd_client_ca_cert:
+etcd_client_ca_key:
+etcd_client_ca_config:
+  signing:
+    default:
+      expiry: 43800h
+      usages:
+        - signing
+        - key encipherment
+        - server auth
+        - client auth
+
+etcd_csr_country:
+etcd_csr_state:
+etcd_csr_location:
+etcd_csr_org:
+etcd_csr_orgunit:
+etcd_csr_config:
+  CN: Etcd
+  key:
+    algo: rsa
+    size: 2048
+  names:
+    -
+      C: '{{ etcd_csr_country }}'
+      ST: '{{ etcd_csr_state }}'
+      L: '{{ etcd_csr_location }}'
+      O: '{{ etcd_csr_org }}'
+      OU: '{{ etcd_csr_orgunit }}'

@@ -1,0 +1,6 @@
+export ETCDCTL_ENDPOINTS={{ etcd_client_endpoints | join(",") }}
+
+export ETCDCTL_KEY=/etc/etcd/pki/client.key
+export ETCDCTL_CERT=/etc/etcd/pki/client.crt
+export ETCDCTL_CACERT=/etc/etcd/pki/client-ca.crt
+export ETCDCTL_API=3

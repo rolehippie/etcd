@@ -1,0 +1,235 @@
+- name: install packages
+  with_items:
+    - etcd
+    - golang-cfssl
+  package:
+    name: '{{ item }}'
+    state: present
+  tags:
+    - etcd
+
+- name: profile script
+  template:
+    src: profile.j2
+    dest: /etc/profile.d/etcdctl.sh
+  tags:
+    - etcd
+
+- name: pki dir
+  file:
+    path: /etc/etcd/pki
+    state: directory
+  tags:
+    - etcd
+
+- name: peer ca
+  notify:
+    - restart etcd
+  copy:
+    content: '{{ etcd_peer_ca_cert }}'
+    dest: /etc/etcd/pki/peer-ca.crt
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: check peer cert
+  stat:
+    path: /etc/etcd/pki/peer.crt
+  register: peer_cert_result
+  tags:
+    - etcd
+
+- name: ca json
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  copy:
+    content: '{{ etcd_peer_ca_config | to_json }}'
+    dest: /etc/etcd/pki/ca.json
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: ca key
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  copy:
+    content: '{{ etcd_peer_ca_key }}'
+    dest: /etc/etcd/pki/ca.key
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: peer json
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  copy:
+    content: '{{ etcd_peer_config | to_json }}'
+    dest: /etc/etcd/pki/peer.json
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: peer generate
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/peer-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/peer.json
+  register: generated_peer_cert
+  tags:
+    - etcd
+
+- name: peer parse
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  set_fact:
+   etcd_generated_peer_cert: '{{ generated_peer_cert.stdout | from_json }}'
+  tags:
+    - etcd
+
+- name: peer cert
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  notify:
+    - restart etcd
+  copy:
+    content: '{{ etcd_generated_peer_cert.cert }}'
+    dest: /etc/etcd/pki/peer.crt
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: peer key
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  notify:
+    - restart etcd
+  copy:
+    content: '{{ etcd_generated_peer_cert.key }}'
+    dest: /etc/etcd/pki/peer.key
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: delete artifacts
+  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+  with_items:
+    - /etc/etcd/pki/ca.json
+    - /etc/etcd/pki/ca.key
+    - /etc/etcd/pki/peer.json
+  file:
+    path: '{{ item }}'
+    state: absent
+  tags:
+    - etcd
+
+- name: client ca
+  notify:
+    - restart etcd
+  copy:
+    content: '{{ etcd_client_ca_cert }}'
+    dest: /etc/etcd/pki/client-ca.crt
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: check client cert
+  stat:
+    path: /etc/etcd/pki/client.crt
+  register: client_cert_result
+  tags:
+    - etcd
+
+- name: ca json
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  copy:
+    content: '{{ etcd_client_ca_config | to_json }}'
+    dest: /etc/etcd/pki/ca.json
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: ca key
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  copy:
+    content: '{{ etcd_client_ca_key }}'
+    dest: /etc/etcd/pki/ca.key
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: client json
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  copy:
+    content: '{{ etcd_client_config | to_json }}'
+    dest: /etc/etcd/pki/client.json
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: client generate
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/client-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/client.json
+  register: generated_client_cert
+  tags:
+    - etcd
+
+- name: client parse
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  set_fact:
+   etcd_generated_client_cert: '{{ generated_client_cert.stdout | from_json }}'
+  tags:
+    - etcd
+
+- name: client cert
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  notify:
+    - restart etcd
+  copy:
+    content: '{{ etcd_generated_client_cert.cert }}'
+    dest: /etc/etcd/pki/client.crt
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: client key
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  notify:
+    - restart etcd
+  copy:
+    content: '{{ etcd_generated_client_cert.key }}'
+    dest: /etc/etcd/pki/client.key
+    mode: u=rw,g=,o=
+  tags:
+    - etcd
+
+- name: delete artifacts
+  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+  with_items:
+    - /etc/etcd/pki/ca.json
+    - /etc/etcd/pki/ca.key
+    - /etc/etcd/pki/client.json
+  file:
+    path: '{{ item }}'
+    state: absent
+  tags:
+    - etcd
+
+- name: default config
+  notify:
+    - restart etcd
+  template:
+    src: default.j2
+    dest: /etc/default/etcd
+  tags:
+    - etcd
+
+- name: service file
+  notify:
+    - restart etcd
+  template:
+    src: service.j2
+    dest: /etc/systemd/system/etcd.service
+  tags:
+    - etcd
+
+- name: service start
+  systemd:
+    name: etcd
+    state: started
+    daemon_reload: yes
+    masked: no
+    enabled: yes
+  tags:
+    - etcd

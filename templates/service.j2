@@ -1,0 +1,17 @@
+[Unit]
+Description=Etcd
+
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+
+Restart=on-abnormal
+LimitNOFILE=65536
+
+EnvironmentFile=-/etc/default/etcd
+ExecStart=/usr/bin/etcd
+
+[Install]
+WantedBy=multi-user.target
