@@ -7,7 +7,10 @@ Wants=network-online.target
 [Service]
 Type=notify
 
-Restart=on-abnormal
+Restart=always
+RestartSec=5s
+TimeoutStartSec=0
+
 LimitNOFILE=65536
 
 EnvironmentFile=-/etc/default/etcd
