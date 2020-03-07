@@ -1,15 +1,20 @@
+# Standards: 0.1
+---
 galaxy_info:
   author: Thomas Boerger
   description: Ansible role to configure etcd
   license: Apache-2.0
   min_ansible_version: 2.5
   platforms:
-  - name: Ubuntu
-    versions:
-    - xenial
-    - bionic
+    - name: Ubuntu
+      versions:
+        - xenial
+        - bionic
   galaxy_tags:
-  - etcd
-  - etcdctl
+    - etcd
+    - etcdctl
 
-dependencies: []
+dependencies:
+  - rolehippie.cfssl
+
+...
