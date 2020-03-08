@@ -1,5 +1,124 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    etcd_csr_country: DE
+    etcd_csr_state: Bavaria
+    etcd_csr_location: Nuremberg
+    etcd_csr_org: Rolehippie
+    etcd_csr_orgunit: Molecule
+    etcd_peer_config:
+      CN: "{{ inventory_hostname }}"
+      hosts:
+        - "{{ etcd_peer_address }}"
+        - "{{ ansible_default_ipv4.address }}"
+      key:
+        algo: rsa
+        size: 2048
+    etcd_peer_ca_cert: |
+      -----BEGIN CERTIFICATE-----
+      MIIDBjCCAe6gAwIBAgIUfgkIYxmCnV5fn3BUznSl2q8FR4EwDQYJKoZIhvcNAQEL
+      BQAwGzEZMBcGA1UEAxMQUGVlciBtb2xlY3VsZSBDQTAeFw0yMDAzMDgxMTU5MDBa
+      Fw0yNTAzMDcxMTU5MDBaMBsxGTAXBgNVBAMTEFBlZXIgbW9sZWN1bGUgQ0EwggEi
+      MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCy6emits/k0qr/zC3+Fra2s8EF
+      hC5CsDYoTOM+jMO112zzVAhqcRDUQMMtg5yRjG6Lpo89jHnb/wvsMrhDGSoXGewt
+      3V4Pf5YygiYXB26eeE9QtPvHQP1oy7BK2UZ5O8iDuXiKgPThcVB5LRt4iv4rEMKy
+      qn1L2sWYJlpejhl4TOIuey1Xkp0S8JjL0fNQZg0nlQVGpajsjKmkT1aPzXf5huW4
+      9pQNQ1gv6a7GFHPEvG1EvXwywj+/pXL2mfga/2Ksd1bMwMpLQHm4ZNZ/dHsXuvot
+      TizsFElFYQHcoCtLWDOI4bU2WTIxNGcBj63BL1T/ykeRgBdrk8l0Tn8nPdczAgMB
+      AAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+      BBQGhgRYVY6GLTE4D0MXVwMblbslbjANBgkqhkiG9w0BAQsFAAOCAQEAC72zRJF9
+      WA3HNDnn8Z9JQACkuRQnHRrQY0OmsTpES1BMhhcGnk+2SOJ68kseDgiTY2BcKIwi
+      sBaI7T+0KqQX0nLn9h/0AhjIhMsBtGULfTS0eil3LslrQ0aHxwkLHNxPs55Pi8r4
+      N1QYrCuWb/6wX19pLHiWWV6hcwG1F6J4mNUjf3aQ2rELlKLZ8fAkS3pLtb7xzDLK
+      WCaBSi8f6IVmDUjJECjc8Z7Egi+fmEft9A/Gmb5OLH4D/FvtXGmmMFjNFKv9Q8Pk
+      3jDv61iTdwFst5g/WlMcRY+vqv+MYBvglcWpmp8Cms4b5GULjadd5DuhPlm5111f
+      ms26Ve1e7i8CPQ==
+      -----END CERTIFICATE-----
+    etcd_peer_ca_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEogIBAAKCAQEAsunporbP5NKq/8wt/ha2trPBBYQuQrA2KEzjPozDtdds81QI
+      anEQ1EDDLYOckYxui6aPPYx52/8L7DK4QxkqFxnsLd1eD3+WMoImFwdunnhPULT7
+      x0D9aMuwStlGeTvIg7l4ioD04XFQeS0beIr+KxDCsqp9S9rFmCZaXo4ZeEziLnst
+      V5KdEvCYy9HzUGYNJ5UFRqWo7IyppE9Wj813+YbluPaUDUNYL+muxhRzxLxtRL18
+      MsI/v6Vy9pn4Gv9irHdWzMDKS0B5uGTWf3R7F7r6LU4s7BRJRWEB3KArS1gziOG1
+      NlkyMTRnAY+twS9U/8pHkYAXa5PJdE5/Jz3XMwIDAQABAoIBABvzCrqOkH+QoYIA
+      ZZbx+W0lO5wfABMO8Abvq/hTiSdZFf4VPJNUQmrGCzeK/eSG6aYLSQk2brr9ZuFp
+      MvvYbIjbVdf8YvtM1SvixQyH7rH23X0gKM0BzBSY7VtkAexieHqLeNc6OgcV6ppj
+      f40fOYGExsWeeKBm9sNECo4G6Nev+CSy+l0U6pghgFwln6iBostyoKYuUS+tdipC
+      8IpUjyHHqjHxoUhWOxbgckferg54xQWh8AzdG9fAjDK4c7g1gR4H/toQom6EpQCV
+      mJNlt3Tvj70Ta+tHpzrRgEJJMat3xuoDXHXcWkRe6Hq8bN8IBKMTtznkx0xDiUAe
+      qRyX/bECgYEAznSfaOThzqq+0sixzkT4bo224Iyl/ivtCcmhr9QeqgsAgS4bDUqt
+      RYPzBmU7ydl0aEhzULZlFydxi51j0fkrchawNFmx9BHvClxKX6ru9xKPax06q1Xu
+      2ns5y02ftFt5exeDmEvW4e/nla/1O82ZyJHzWwZnModSUsNESZAsml8CgYEA3dlJ
+      XLnsLQyfyF8YDElboiy1+7LF6+pQw1FshL6n6qD9aqdEd1ug1uHiuZLh0T96JFTi
+      DrXL0AF2qwFHMPe9M8KCP8Dvnki+hK7nk0LJKFYCrxpmMo20jEicDxsxYBDj6XUp
+      Vz80i4xvdAJqS6hY5R53GQMFQq8TERSPwS+em60CgYABteeoN9VDIBkKqA0JF3sz
+      d0sfmyq462ZAYYJMcaZ7ZDHx4A7rUkYTQF+gGvCe4IVdY9RIw+ocggAn1vr/v1/D
+      xzpYhLG7wvZHELKxDjqCo426pnhY+RJMjx7Qd2kuVl+wTGaTuXUjVBiIHfgbMb3n
+      coYgp/Hs8kAVXXbQYThtYwKBgBGBGoPBe7wWOelCb5BQnXVPV9CTS4CQzWyL2Sck
+      L/WYXEZ1CjbsuOUbj5sa1sx+2LFTLT8B4yH3a5iUkjxv37LczxAetglkLfwkHMuG
+      wn53QuD0EUo92hgThpS+jYfJ7WG3R9rFduzn2MdrhV2Q2+rAG5+SmHCphbScTbdt
+      fXNFAoGAGqhrLdtbNzKQS1oZifW4L0yoeqsw56P+6wc4HPiMvIvIf4s9V+7QYtXq
+      ZxSU8CEJJpCRl5EXJ60xp4ymqCLDZy0DKT6gL3FV+kh/a4Xnp4Sj/oq30f/faIA/
+      6ndrLSqC7lrriaJ9ThLtSez9btDzZhteh4j1AR7XAANdZnbae8s=
+      -----END RSA PRIVATE KEY-----
+    etcd_client_config:
+      CN: "{{ inventory_hostname }}"
+      hosts:
+        - "{{ etcd_client_address }}"
+        - "{{ ansible_default_ipv4.address }}"
+      key:
+        algo: rsa
+        size: 2048
+    etcd_client_ca_cert: |
+      -----BEGIN CERTIFICATE-----
+      MIIDBjCCAe6gAwIBAgIUfgkIYxmCnV5fn3BUznSl2q8FR4EwDQYJKoZIhvcNAQEL
+      BQAwGzEZMBcGA1UEAxMQUGVlciBtb2xlY3VsZSBDQTAeFw0yMDAzMDgxMTU5MDBa
+      Fw0yNTAzMDcxMTU5MDBaMBsxGTAXBgNVBAMTEFBlZXIgbW9sZWN1bGUgQ0EwggEi
+      MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCy6emits/k0qr/zC3+Fra2s8EF
+      hC5CsDYoTOM+jMO112zzVAhqcRDUQMMtg5yRjG6Lpo89jHnb/wvsMrhDGSoXGewt
+      3V4Pf5YygiYXB26eeE9QtPvHQP1oy7BK2UZ5O8iDuXiKgPThcVB5LRt4iv4rEMKy
+      qn1L2sWYJlpejhl4TOIuey1Xkp0S8JjL0fNQZg0nlQVGpajsjKmkT1aPzXf5huW4
+      9pQNQ1gv6a7GFHPEvG1EvXwywj+/pXL2mfga/2Ksd1bMwMpLQHm4ZNZ/dHsXuvot
+      TizsFElFYQHcoCtLWDOI4bU2WTIxNGcBj63BL1T/ykeRgBdrk8l0Tn8nPdczAgMB
+      AAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW
+      BBQGhgRYVY6GLTE4D0MXVwMblbslbjANBgkqhkiG9w0BAQsFAAOCAQEAC72zRJF9
+      WA3HNDnn8Z9JQACkuRQnHRrQY0OmsTpES1BMhhcGnk+2SOJ68kseDgiTY2BcKIwi
+      sBaI7T+0KqQX0nLn9h/0AhjIhMsBtGULfTS0eil3LslrQ0aHxwkLHNxPs55Pi8r4
+      N1QYrCuWb/6wX19pLHiWWV6hcwG1F6J4mNUjf3aQ2rELlKLZ8fAkS3pLtb7xzDLK
+      WCaBSi8f6IVmDUjJECjc8Z7Egi+fmEft9A/Gmb5OLH4D/FvtXGmmMFjNFKv9Q8Pk
+      3jDv61iTdwFst5g/WlMcRY+vqv+MYBvglcWpmp8Cms4b5GULjadd5DuhPlm5111f
+      ms26Ve1e7i8CPQ==
+      -----END CERTIFICATE-----
+    etcd_client_ca_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEogIBAAKCAQEAsunporbP5NKq/8wt/ha2trPBBYQuQrA2KEzjPozDtdds81QI
+      anEQ1EDDLYOckYxui6aPPYx52/8L7DK4QxkqFxnsLd1eD3+WMoImFwdunnhPULT7
+      x0D9aMuwStlGeTvIg7l4ioD04XFQeS0beIr+KxDCsqp9S9rFmCZaXo4ZeEziLnst
+      V5KdEvCYy9HzUGYNJ5UFRqWo7IyppE9Wj813+YbluPaUDUNYL+muxhRzxLxtRL18
+      MsI/v6Vy9pn4Gv9irHdWzMDKS0B5uGTWf3R7F7r6LU4s7BRJRWEB3KArS1gziOG1
+      NlkyMTRnAY+twS9U/8pHkYAXa5PJdE5/Jz3XMwIDAQABAoIBABvzCrqOkH+QoYIA
+      ZZbx+W0lO5wfABMO8Abvq/hTiSdZFf4VPJNUQmrGCzeK/eSG6aYLSQk2brr9ZuFp
+      MvvYbIjbVdf8YvtM1SvixQyH7rH23X0gKM0BzBSY7VtkAexieHqLeNc6OgcV6ppj
+      f40fOYGExsWeeKBm9sNECo4G6Nev+CSy+l0U6pghgFwln6iBostyoKYuUS+tdipC
+      8IpUjyHHqjHxoUhWOxbgckferg54xQWh8AzdG9fAjDK4c7g1gR4H/toQom6EpQCV
+      mJNlt3Tvj70Ta+tHpzrRgEJJMat3xuoDXHXcWkRe6Hq8bN8IBKMTtznkx0xDiUAe
+      qRyX/bECgYEAznSfaOThzqq+0sixzkT4bo224Iyl/ivtCcmhr9QeqgsAgS4bDUqt
+      RYPzBmU7ydl0aEhzULZlFydxi51j0fkrchawNFmx9BHvClxKX6ru9xKPax06q1Xu
+      2ns5y02ftFt5exeDmEvW4e/nla/1O82ZyJHzWwZnModSUsNESZAsml8CgYEA3dlJ
+      XLnsLQyfyF8YDElboiy1+7LF6+pQw1FshL6n6qD9aqdEd1ug1uHiuZLh0T96JFTi
+      DrXL0AF2qwFHMPe9M8KCP8Dvnki+hK7nk0LJKFYCrxpmMo20jEicDxsxYBDj6XUp
+      Vz80i4xvdAJqS6hY5R53GQMFQq8TERSPwS+em60CgYABteeoN9VDIBkKqA0JF3sz
+      d0sfmyq462ZAYYJMcaZ7ZDHx4A7rUkYTQF+gGvCe4IVdY9RIw+ocggAn1vr/v1/D
+      xzpYhLG7wvZHELKxDjqCo426pnhY+RJMjx7Qd2kuVl+wTGaTuXUjVBiIHfgbMb3n
+      coYgp/Hs8kAVXXbQYThtYwKBgBGBGoPBe7wWOelCb5BQnXVPV9CTS4CQzWyL2Sck
+      L/WYXEZ1CjbsuOUbj5sa1sx+2LFTLT8B4yH3a5iUkjxv37LczxAetglkLfwkHMuG
+      wn53QuD0EUo92hgThpS+jYfJ7WG3R9rFduzn2MdrhV2Q2+rAG5+SmHCphbScTbdt
+      fXNFAoGAGqhrLdtbNzKQS1oZifW4L0yoeqsw56P+6wc4HPiMvIvIf4s9V+7QYtXq
+      ZxSU8CEJJpCRl5EXJ60xp4ymqCLDZy0DKT6gL3FV+kh/a4Xnp4Sj/oq30f/faIA/
+      6ndrLSqC7lrriaJ9ThLtSez9btDzZhteh4j1AR7XAANdZnbae8s=
+      -----END RSA PRIVATE KEY-----
   roles:
+    - role: cfssl
     - role: etcd

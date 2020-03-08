@@ -14,7 +14,7 @@ galaxy_info:
     - etcd
     - etcdctl
 
-dependencies:
-  - rolehippie.cfssl
+# rolehippie.cfssl
+dependencies: []
 
 ...
