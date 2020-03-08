@@ -1,12 +1,41 @@
+# Standards: 0.1
+---
+# @var etcd_discovery_token:description: Discovery token for Etcd cluster
 etcd_discovery_token:
+
+# @var etcd_client_endpoints:description: List of client endpoints
 etcd_client_endpoints: []
 
+# @var etcd_peer_address:description: Peer address for this host
 etcd_peer_address: 0.0.0.0
+
+# @var etcd_advertise_peer_address:description: Advertise peer address for this host
 etcd_advertise_peer_address: '{{ ansible_default_ipv4["address"] }}'
+
+# @var etcd_peer_cert_overwrite:description: Enforce new peer certificates on this host
 etcd_peer_cert_overwrite: False
+
+# @var etcd_peer_config:description: Client config for SSL certs by cfssl
+# @var etcd_peer_config:example: >
+# etcd_peer_config:
+#   CN: '{{ inventory_hostname }}'
+#   hosts:
+#     - '{{ etcd_peer_address }}'
+#     - '{{ ansible_default_ipv4["address"] }}'
+#     - '{{ inventory_hostname }}.example.com'
+#   key:
+#     algo: rsa
+#     size: 2048
+# @end
 etcd_peer_config:
+
+# @var etcd_peer_ca_cert:description: CA certificate for peers
 etcd_peer_ca_cert:
+
+# @var etcd_peer_ca_key:description: CA key for peers
 etcd_peer_ca_key:
+
+# @var etcd_peer_ca_config:description: Full peer CA config
 etcd_peer_ca_config:
   signing:
     default:
@@ -17,12 +46,36 @@ etcd_peer_ca_config:
         - server auth
         - client auth
 
+# @var etcd_client_address:description: Client address for this host
 etcd_client_address: 0.0.0.0
+
+# @var etcd_advertise_client_address:description: Advertise client address for this host
 etcd_advertise_client_address: '{{ ansible_default_ipv4["address"] }}'
+
+# @var etcd_client_cert_overwrite:description: Enforce new client certificates on this host
 etcd_client_cert_overwrite: False
+
+# @var etcd_client_config:description: Client confog for SSL certy by cfssl
+# @var etcd_client_config:example: >
+# etcd_client_config:
+#   CN: '{{ inventory_hostname }}'
+#   hosts:
+#     - '{{ etcd_client_address }}'
+#     - '{{ ansible_default_ipv4["address"] }}'
+#     - '{{ inventory_hostname }}.example.com'
+#   key:
+#     algo: rsa
+#     size: 2048
+# @end
 etcd_client_config:
+
+# @var etcd_client_ca_cert:description: CA certificate for clients
 etcd_client_ca_cert:
+
+# @var etcd_client_ca_key:description: CA key for clients
 etcd_client_ca_key:
+
+# @var etcd_client_ca_config:description: Full client CA config
 etcd_client_ca_config:
   signing:
     default:
@@ -33,11 +86,22 @@ etcd_client_ca_config:
         - server auth
         - client auth
 
+# @var etcd_csr_country:description: Country used at etcd_csr_config
 etcd_csr_country:
+
+# @var etcd_csr_state:description: State used at etcd_csr_config
 etcd_csr_state:
+
+# @var etcd_csr_location:description: Location used at etcd_csr_config
 etcd_csr_location:
+
+# @var etcd_csr_org:description: Org used at etcd_csr_config
 etcd_csr_org:
+
+# @var etcd_csr_orgunit:description: Orgunit used at etcd_csr_config
 etcd_csr_orgunit:
+
+# @var etcd_csr_config:description: Full config for CSR
 etcd_csr_config:
   CN: Etcd
   key:
@@ -50,3 +114,5 @@ etcd_csr_config:
       L: '{{ etcd_csr_location }}'
       O: '{{ etcd_csr_org }}'
       OU: '{{ etcd_csr_orgunit }}'
+
+...

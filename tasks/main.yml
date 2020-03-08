@@ -1,235 +1,238 @@
-- name: install packages
+# Standards: 0.1
+---
+- name: Install required packages
   with_items:
     - etcd
-    - golang-cfssl
   package:
-    name: '{{ item }}'
+    name: "{{ item }}"
     state: present
   tags:
     - etcd
 
-- name: profile script
+- name: Write profile script
   template:
     src: profile.j2
     dest: /etc/profile.d/etcdctl.sh
   tags:
     - etcd
 
-- name: pki dir
+- name: Create pki dir
   file:
     path: /etc/etcd/pki
     state: directory
   tags:
     - etcd
 
-- name: peer ca
+- name: Write peer CA
   notify:
-    - restart etcd
+    - Restart etcd
   copy:
-    content: '{{ etcd_peer_ca_cert }}'
+    content: "{{ etcd_peer_ca_cert }}"
     dest: /etc/etcd/pki/peer-ca.crt
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: check peer cert
+- name: Check peer cert
   stat:
     path: /etc/etcd/pki/peer.crt
   register: peer_cert_result
   tags:
     - etcd
 
-- name: ca json
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Peer CA json
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   copy:
-    content: '{{ etcd_peer_ca_config | to_json }}'
+    content: "{{ etcd_peer_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: ca key
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Peer CA key
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   copy:
-    content: '{{ etcd_peer_ca_key }}'
+    content: "{{ etcd_peer_ca_key }}"
     dest: /etc/etcd/pki/ca.key
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: peer json
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Peer cert json
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   copy:
-    content: '{{ etcd_peer_config | to_json }}'
+    content: "{{ etcd_peer_config | to_json }}"
     dest: /etc/etcd/pki/peer.json
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: peer generate
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Generate peer cert
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/peer-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/peer.json
   register: generated_peer_cert
   tags:
     - etcd
 
-- name: peer parse
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Parse peer cert
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   set_fact:
-   etcd_generated_peer_cert: '{{ generated_peer_cert.stdout | from_json }}'
+    etcd_generated_peer_cert: "{{ generated_peer_cert.stdout | from_json }}"
   tags:
     - etcd
 
-- name: peer cert
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Write peer cert
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   notify:
-    - restart etcd
+    - Restart etcd
   copy:
-    content: '{{ etcd_generated_peer_cert.cert }}'
+    content: "{{ etcd_generated_peer_cert.cert }}"
     dest: /etc/etcd/pki/peer.crt
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: peer key
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Write peer key
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   notify:
-    - restart etcd
+    - Restart etcd
   copy:
-    content: '{{ etcd_generated_peer_cert.key }}'
+    content: "{{ etcd_generated_peer_cert.key }}"
     dest: /etc/etcd/pki/peer.key
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: delete artifacts
-  when: peer_cert_result.stat.exists == False or etcd_peer_cert_overwrite
+- name: Delete peer artifacts
+  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   with_items:
     - /etc/etcd/pki/ca.json
     - /etc/etcd/pki/ca.key
     - /etc/etcd/pki/peer.json
   file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: absent
   tags:
     - etcd
 
-- name: client ca
+- name: Write client CA
   notify:
-    - restart etcd
+    - Restart etcd
   copy:
-    content: '{{ etcd_client_ca_cert }}'
+    content: "{{ etcd_client_ca_cert }}"
     dest: /etc/etcd/pki/client-ca.crt
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: check client cert
+- name: Check client cert
   stat:
     path: /etc/etcd/pki/client.crt
   register: client_cert_result
   tags:
     - etcd
 
-- name: ca json
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Client CA json
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   copy:
-    content: '{{ etcd_client_ca_config | to_json }}'
+    content: "{{ etcd_client_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: ca key
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Client CA key
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   copy:
-    content: '{{ etcd_client_ca_key }}'
+    content: "{{ etcd_client_ca_key }}"
     dest: /etc/etcd/pki/ca.key
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: client json
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Client cert json
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   copy:
-    content: '{{ etcd_client_config | to_json }}'
+    content: "{{ etcd_client_config | to_json }}"
     dest: /etc/etcd/pki/client.json
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: client generate
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Generate client cert
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/client-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/client.json
   register: generated_client_cert
   tags:
     - etcd
 
-- name: client parse
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Parse client cert
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   set_fact:
-   etcd_generated_client_cert: '{{ generated_client_cert.stdout | from_json }}'
+    etcd_generated_client_cert: "{{ generated_client_cert.stdout | from_json }}"
   tags:
     - etcd
 
-- name: client cert
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Write client cert
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   notify:
-    - restart etcd
+    - Restart etcd
   copy:
-    content: '{{ etcd_generated_client_cert.cert }}'
+    content: "{{ etcd_generated_client_cert.cert }}"
     dest: /etc/etcd/pki/client.crt
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: client key
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Write client key
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   notify:
-    - restart etcd
+    - Restart etcd
   copy:
-    content: '{{ etcd_generated_client_cert.key }}'
+    content: "{{ etcd_generated_client_cert.key }}"
     dest: /etc/etcd/pki/client.key
     mode: u=rw,g=,o=
   tags:
     - etcd
 
-- name: delete artifacts
-  when: client_cert_result.stat.exists == False or etcd_client_cert_overwrite
+- name: Delete client artifacts
+  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   with_items:
     - /etc/etcd/pki/ca.json
     - /etc/etcd/pki/ca.key
     - /etc/etcd/pki/client.json
   file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: absent
   tags:
     - etcd
 
-- name: default config
+- name: Write env config
   notify:
-    - restart etcd
+    - Restart etcd
   template:
     src: default.j2
     dest: /etc/default/etcd
   tags:
     - etcd
 
-- name: service file
+- name: Write service file
   notify:
-    - restart etcd
+    - Restart etcd
   template:
     src: service.j2
     dest: /etc/systemd/system/etcd.service
   tags:
     - etcd
 
-- name: service start
+- name: Start etcd service
   systemd:
     name: etcd
     state: started
-    daemon_reload: yes
-    masked: no
-    enabled: yes
+    daemon_reload: True
+    masked: False
+    enabled: True
   tags:
     - etcd
+
+...
