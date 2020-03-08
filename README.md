@@ -313,7 +313,9 @@ etcd_peer_config:
 
 ## Dependencies
 
-- '[cfssl](https://github.com/rolehippie/cfssl)'
+- '['
+- '  "[cfssl](https://github.com/rolehippie/cfssl)"'
+- ']'
 
 ## License
 
