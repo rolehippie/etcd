@@ -1,4 +1,4 @@
-# Standards: 0.1
+# Standards: 1.2
 ---
 # @var etcd_discovery_token:description: Discovery token for Etcd cluster
 etcd_discovery_token:
