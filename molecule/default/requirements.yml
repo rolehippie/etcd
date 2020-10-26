@@ -1,6 +1,0 @@
----
-- src: https://github.com/rolehippie/cfssl
-  scm: git
-  version: master
-
-...
