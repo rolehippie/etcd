@@ -13,12 +13,18 @@
   template:
     src: profile.j2
     dest: /etc/profile.d/etcdctl.sh
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
   tags:
     - etcd
 
 - name: Create pki dir
   file:
     path: /etc/etcd/pki
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=rx
     state: directory
   tags:
     - etcd
@@ -29,6 +35,8 @@
   copy:
     content: "{{ etcd_peer_ca_cert }}"
     dest: /etc/etcd/pki/peer-ca.crt
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -45,6 +53,8 @@
   copy:
     content: "{{ etcd_peer_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -54,6 +64,8 @@
   copy:
     content: "{{ etcd_peer_ca_key }}"
     dest: /etc/etcd/pki/ca.key
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -63,6 +75,8 @@
   copy:
     content: "{{ etcd_peer_config | to_json }}"
     dest: /etc/etcd/pki/peer.json
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -88,6 +102,8 @@
   copy:
     content: "{{ etcd_generated_peer_cert.cert }}"
     dest: /etc/etcd/pki/peer.crt
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -99,6 +115,8 @@
   copy:
     content: "{{ etcd_generated_peer_cert.key }}"
     dest: /etc/etcd/pki/peer.key
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -121,6 +139,8 @@
   copy:
     content: "{{ etcd_client_ca_cert }}"
     dest: /etc/etcd/pki/client-ca.crt
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -137,6 +157,8 @@
   copy:
     content: "{{ etcd_client_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -146,6 +168,8 @@
   copy:
     content: "{{ etcd_client_ca_key }}"
     dest: /etc/etcd/pki/ca.key
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -155,6 +179,8 @@
   copy:
     content: "{{ etcd_client_config | to_json }}"
     dest: /etc/etcd/pki/client.json
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -180,6 +206,8 @@
   copy:
     content: "{{ etcd_generated_client_cert.cert }}"
     dest: /etc/etcd/pki/client.crt
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -191,6 +219,8 @@
   copy:
     content: "{{ etcd_generated_client_cert.key }}"
     dest: /etc/etcd/pki/client.key
+    owner: root
+    group: root
     mode: u=rw,g=,o=
   tags:
     - etcd
@@ -213,6 +243,9 @@
   template:
     src: default.j2
     dest: /etc/default/etcd
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
   tags:
     - etcd
 
@@ -222,6 +255,9 @@
   template:
     src: service.j2
     dest: /etc/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
   tags:
     - etcd
 
