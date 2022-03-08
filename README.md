@@ -1,43 +1,44 @@
 # etcd
 
-[![Source Code](https://img.shields.io/badge/github-source%20code-blue?logo=github&logoColor=white)](https://github.com/rolehippie/etcd) [![Testing Build](https://github.com/rolehippie/etcd/workflows/testing/badge.svg)](https://github.com/rolehippie/etcd/actions?query=workflow%3Atesting) [![Readme Build](https://github.com/rolehippie/etcd/workflows/readme/badge.svg)](https://github.com/rolehippie/etcd/actions?query=workflow%3Areadme) [![Galaxy Build](https://github.com/rolehippie/etcd/workflows/galaxy/badge.svg)](https://github.com/rolehippie/etcd/actions?query=workflow%3Agalaxy) [![License: Apache-2.0](https://img.shields.io/github/license/rolehippie/etcd)](https://github.com/rolehippie/etcd/blob/master/LICENSE) 
+[![Source Code](https://img.shields.io/badge/github-source%20code-blue?logo=github&logoColor=white)](https://github.com/rolehippie/etcd) [![Testing Build](https://github.com/rolehippie/etcd/workflows/testing/badge.svg)](https://github.com/rolehippie/etcd/actions?query=workflow%3Atesting) [![Readme Build](https://github.com/rolehippie/etcd/workflows/readme/badge.svg)](https://github.com/rolehippie/etcd/actions?query=workflow%3Areadme) [![Galaxy Build](https://github.com/rolehippie/etcd/workflows/galaxy/badge.svg)](https://github.com/rolehippie/etcd/actions?query=workflow%3Agalaxy) [![License: Apache-2.0](https://img.shields.io/github/license/rolehippie/etcd)](https://github.com/rolehippie/etcd/blob/master/LICENSE)
 
-Ansible role to install and configure etcd distributed key-value store. 
+Ansible role to install and configure etcd distributed key-value store.
 
-## Sponsor 
+## Sponsor
 
-[![Proact Deutschland GmbH](https://proact.eu/wp-content/uploads/2020/03/proact-logo.png)](https://proact.eu) 
+[![Proact Deutschland GmbH](https://proact.eu/wp-content/uploads/2020/03/proact-logo.png)](https://proact.eu)
 
 Building and improving this Ansible role have been sponsored by my employer **Proact Deutschland GmbH**.
 
 ## Table of content
 
-* [Default Variables](#default-variables)
-  * [etcd_advertise_client_address](#etcd_advertise_client_address)
-  * [etcd_advertise_peer_address](#etcd_advertise_peer_address)
-  * [etcd_client_address](#etcd_client_address)
-  * [etcd_client_ca_cert](#etcd_client_ca_cert)
-  * [etcd_client_ca_config](#etcd_client_ca_config)
-  * [etcd_client_ca_key](#etcd_client_ca_key)
-  * [etcd_client_cert_overwrite](#etcd_client_cert_overwrite)
-  * [etcd_client_config](#etcd_client_config)
-  * [etcd_client_endpoints](#etcd_client_endpoints)
-  * [etcd_csr_config](#etcd_csr_config)
-  * [etcd_csr_country](#etcd_csr_country)
-  * [etcd_csr_location](#etcd_csr_location)
-  * [etcd_csr_org](#etcd_csr_org)
-  * [etcd_csr_orgunit](#etcd_csr_orgunit)
-  * [etcd_csr_state](#etcd_csr_state)
-  * [etcd_discovery_token](#etcd_discovery_token)
-  * [etcd_peer_address](#etcd_peer_address)
-  * [etcd_peer_ca_cert](#etcd_peer_ca_cert)
-  * [etcd_peer_ca_config](#etcd_peer_ca_config)
-  * [etcd_peer_ca_key](#etcd_peer_ca_key)
-  * [etcd_peer_cert_overwrite](#etcd_peer_cert_overwrite)
-  * [etcd_peer_config](#etcd_peer_config)
-* [Dependencies](#dependencies)
-* [License](#license)
-* [Author](#author)
+- [Default Variables](#default-variables)
+  - [etcd_advertise_client_address](#etcd_advertise_client_address)
+  - [etcd_advertise_peer_address](#etcd_advertise_peer_address)
+  - [etcd_client_address](#etcd_client_address)
+  - [etcd_client_ca_cert](#etcd_client_ca_cert)
+  - [etcd_client_ca_config](#etcd_client_ca_config)
+  - [etcd_client_ca_key](#etcd_client_ca_key)
+  - [etcd_client_cert_overwrite](#etcd_client_cert_overwrite)
+  - [etcd_client_config](#etcd_client_config)
+  - [etcd_client_endpoints](#etcd_client_endpoints)
+  - [etcd_csr_config](#etcd_csr_config)
+  - [etcd_csr_country](#etcd_csr_country)
+  - [etcd_csr_location](#etcd_csr_location)
+  - [etcd_csr_org](#etcd_csr_org)
+  - [etcd_csr_orgunit](#etcd_csr_orgunit)
+  - [etcd_csr_state](#etcd_csr_state)
+  - [etcd_discovery_token](#etcd_discovery_token)
+  - [etcd_peer_address](#etcd_peer_address)
+  - [etcd_peer_ca_cert](#etcd_peer_ca_cert)
+  - [etcd_peer_ca_config](#etcd_peer_ca_config)
+  - [etcd_peer_ca_key](#etcd_peer_ca_key)
+  - [etcd_peer_cert_overwrite](#etcd_peer_cert_overwrite)
+  - [etcd_peer_config](#etcd_peer_config)
+- [Discovered Tags](#discovered-tags)
+- [Dependencies](#dependencies)
+- [License](#license)
+- [Author](#author)
 
 ---
 
@@ -317,9 +318,14 @@ etcd_peer_config:
     size: 2048
 ```
 
+## Discovered Tags
+
+**_etcd_**
+
+
 ## Dependencies
 
-* [rolehippie.cfssl](https://github.com/rolehippie/cfssl)
+- [rolehippie.cfssl](https://github.com/rolehippie/cfssl)
 
 ## License
 
