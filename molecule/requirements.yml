@@ -2,8 +2,6 @@
 ---
 collections: []
 roles:
-  - src: https://github.com/rolehippie/cfssl
-    scm: git
-    version: master
+  - name: rolehippie.cfssl
 
 ...

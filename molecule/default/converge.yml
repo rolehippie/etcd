@@ -121,7 +121,7 @@
       6ndrLSqC7lrriaJ9ThLtSez9btDzZhteh4j1AR7XAANdZnbae8s=
       -----END RSA PRIVATE KEY-----
   roles:
-    - role: cfssl
-    - role: etcd
+    - role: rolehippie.cfssl
+    - role: rolehippie.etcd
 
 ...
