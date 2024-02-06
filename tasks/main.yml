@@ -2,14 +2,14 @@
 - name: Install required packages
   with_items:
     - etcd
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   tags:
     - etcd
 
 - name: Write profile script
-  template:
+  ansible.builtin.template:
     src: profile.j2
     dest: /etc/profile.d/etcdctl.sh
     owner: root
@@ -19,7 +19,7 @@
     - etcd
 
 - name: Create pki dir
-  file:
+  ansible.builtin.file:
     path: /etc/etcd/pki
     owner: root
     group: root
@@ -31,7 +31,7 @@
 - name: Write peer CA
   notify:
     - Restart etcd
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_peer_ca_cert }}"
     dest: /etc/etcd/pki/peer-ca.crt
     owner: root
@@ -41,7 +41,7 @@
     - etcd
 
 - name: Check peer cert
-  stat:
+  ansible.builtin.stat:
     path: /etc/etcd/pki/peer.crt
   register: peer_cert_result
   tags:
@@ -49,7 +49,7 @@
 
 - name: Peer CA json
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_peer_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
     owner: root
@@ -60,7 +60,7 @@
 
 - name: Peer CA key
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_peer_ca_key }}"
     dest: /etc/etcd/pki/ca.key
     owner: root
@@ -71,7 +71,7 @@
 
 - name: Peer cert json
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_peer_config | to_json }}"
     dest: /etc/etcd/pki/peer.json
     owner: root
@@ -82,14 +82,14 @@
 
 - name: Generate peer cert
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/peer-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/peer.json
+  ansible.builtin.command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/peer-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/peer.json
   register: generated_peer_cert
   tags:
     - etcd
 
 - name: Parse peer cert
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  set_fact:
+  ansible.builtin.set_fact:
     etcd_generated_peer_cert: "{{ generated_peer_cert.stdout | from_json }}"
   tags:
     - etcd
@@ -98,7 +98,7 @@
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   notify:
     - Restart etcd
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_generated_peer_cert.cert }}"
     dest: /etc/etcd/pki/peer.crt
     owner: root
@@ -111,7 +111,7 @@
   when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   notify:
     - Restart etcd
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_generated_peer_cert.key }}"
     dest: /etc/etcd/pki/peer.key
     owner: root
@@ -126,7 +126,7 @@
     - /etc/etcd/pki/ca.json
     - /etc/etcd/pki/ca.key
     - /etc/etcd/pki/peer.json
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   tags:
@@ -135,7 +135,7 @@
 - name: Write client CA
   notify:
     - Restart etcd
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_client_ca_cert }}"
     dest: /etc/etcd/pki/client-ca.crt
     owner: root
@@ -145,7 +145,7 @@
     - etcd
 
 - name: Check client cert
-  stat:
+  ansible.builtin.stat:
     path: /etc/etcd/pki/client.crt
   register: client_cert_result
   tags:
@@ -153,7 +153,7 @@
 
 - name: Client CA json
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_client_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
     owner: root
@@ -164,7 +164,7 @@
 
 - name: Client CA key
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_client_ca_key }}"
     dest: /etc/etcd/pki/ca.key
     owner: root
@@ -175,7 +175,7 @@
 
 - name: Client cert json
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_client_config | to_json }}"
     dest: /etc/etcd/pki/client.json
     owner: root
@@ -186,14 +186,14 @@
 
 - name: Generate client cert
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/client-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/client.json
+  ansible.builtin.command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/client-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/client.json
   register: generated_client_cert
   tags:
     - etcd
 
 - name: Parse client cert
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  set_fact:
+  ansible.builtin.set_fact:
     etcd_generated_client_cert: "{{ generated_client_cert.stdout | from_json }}"
   tags:
     - etcd
@@ -202,7 +202,7 @@
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   notify:
     - Restart etcd
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_generated_client_cert.cert }}"
     dest: /etc/etcd/pki/client.crt
     owner: root
@@ -215,7 +215,7 @@
   when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   notify:
     - Restart etcd
-  copy:
+  ansible.builtin.copy:
     content: "{{ etcd_generated_client_cert.key }}"
     dest: /etc/etcd/pki/client.key
     owner: root
@@ -230,7 +230,7 @@
     - /etc/etcd/pki/ca.json
     - /etc/etcd/pki/ca.key
     - /etc/etcd/pki/client.json
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   tags:
@@ -239,7 +239,7 @@
 - name: Write env config
   notify:
     - Restart etcd
-  template:
+  ansible.builtin.template:
     src: default.j2
     dest: /etc/default/etcd
     owner: root
@@ -251,7 +251,7 @@
 - name: Write service file
   notify:
     - Restart etcd
-  template:
+  ansible.builtin.template:
     src: service.j2
     dest: /etc/systemd/system/etcd.service
     owner: root
@@ -261,7 +261,7 @@
     - etcd
 
 - name: Start etcd service
-  systemd:
+  ansible.builtin.systemd:
     name: etcd
     state: started
     daemon_reload: True
