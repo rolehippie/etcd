@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.0](https://github.com/rolehippie/etcd/compare/v1.0.0...v2.0.0) (2024-02-12)
+
+
+### Features
+
+* drop support for ubuntu 18.04 ([02d72fe](https://github.com/rolehippie/etcd/commit/02d72fe8f1e00d5dbfd3d5f5b53b053e1cdb47f9))
+* used full qualified collection names ([b124f2c](https://github.com/rolehippie/etcd/commit/b124f2ce29ecc500f5fab7b8e41404f2bd1096ef))
+
 ## 1.0.0 (2023-01-05)
 
 
