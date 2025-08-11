@@ -1,4 +1,4 @@
-# etcd
+# workspace
 
 [![Source Code](https://img.shields.io/badge/github-source%20code-blue?logo=github&logoColor=white)](https://github.com/rolehippie/etcd)
 [![General Workflow](https://github.com/rolehippie/etcd/actions/workflows/general.yml/badge.svg)](https://github.com/rolehippie/etcd/actions/workflows/general.yml)
@@ -329,7 +329,6 @@ etcd_peer_config:
 ## Discovered Tags
 
 **_etcd_**
-
 
 ## Dependencies
 
