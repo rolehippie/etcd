@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/rolehippie/etcd/compare/v2.0.0...v2.1.0) (2025-10-21)
+
+
+### Features
+
+* apply new repo structure and update linting ([726b19f](https://github.com/rolehippie/etcd/commit/726b19f5403b002bf4b3e7080cf22c9694215815))
+
 ## [2.0.0](https://github.com/rolehippie/etcd/compare/v1.0.0...v2.0.0) (2024-02-12)
 
 
