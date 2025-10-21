@@ -7,5 +7,5 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_etcd_is_installed(host):
-    etcd = host.package("etcd")
+    etcd = host.package("etcd-server")
     assert etcd.is_installed
