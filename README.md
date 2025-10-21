@@ -1,4 +1,4 @@
-# workspace
+# etcd
 
 [![Source Code](https://img.shields.io/badge/github-source%20code-blue?logo=github&logoColor=white)](https://github.com/rolehippie/etcd)
 [![General Workflow](https://github.com/rolehippie/etcd/actions/workflows/general.yml/badge.svg)](https://github.com/rolehippie/etcd/actions/workflows/general.yml)
@@ -59,7 +59,7 @@ Advertise client address for this host
 #### Default value
 
 ```YAML
-etcd_advertise_client_address: '{{ ansible_default_ipv4["address"] }}'
+etcd_advertise_client_address: '{{ ansible_default_ipv4.address }}'
 ```
 
 ### etcd_advertise_peer_address
@@ -69,7 +69,7 @@ Advertise peer address for this host
 #### Default value
 
 ```YAML
-etcd_advertise_peer_address: '{{ ansible_default_ipv4["address"] }}'
+etcd_advertise_peer_address: '{{ ansible_default_ipv4.address }}'
 ```
 
 ### etcd_client_address
@@ -147,7 +147,7 @@ etcd_client_config:
   CN: '{{ inventory_hostname }}'
   hosts:
     - '{{ etcd_client_address }}'
-    - '{{ ansible_default_ipv4["address"] }}'
+    - '{{ ansible_default_ipv4.address }}'
     - '{{ inventory_hostname }}.example.com'
   key:
     algo: rsa
@@ -319,7 +319,7 @@ etcd_peer_config:
   CN: '{{ inventory_hostname }}'
   hosts:
     - '{{ etcd_peer_address }}'
-    - '{{ ansible_default_ipv4["address"] }}'
+    - '{{ ansible_default_ipv4.address }}'
     - '{{ inventory_hostname }}.example.com'
   key:
     algo: rsa

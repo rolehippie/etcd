@@ -1,7 +1,6 @@
 ---
 - name: Install required packages
-  with_items:
-    - etcd
+  loop: "{{ ['etcd'] if ansible_distribution_version is version('24.04', '<') else ['etcd-server', 'etcd-client'] }}"
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
@@ -48,7 +47,8 @@
     - etcd
 
 - name: Peer CA json
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   ansible.builtin.copy:
     content: "{{ etcd_peer_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
@@ -59,7 +59,8 @@
     - etcd
 
 - name: Peer CA key
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   ansible.builtin.copy:
     content: "{{ etcd_peer_ca_key }}"
     dest: /etc/etcd/pki/ca.key
@@ -70,7 +71,8 @@
     - etcd
 
 - name: Peer cert json
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   ansible.builtin.copy:
     content: "{{ etcd_peer_config | to_json }}"
     dest: /etc/etcd/pki/peer.json
@@ -81,21 +83,26 @@
     - etcd
 
 - name: Generate peer cert
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  ansible.builtin.command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/peer-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/peer.json
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   register: generated_peer_cert
+  changed_when: false
+  failed_when: generated_peer_cert.rc != 0
+  ansible.builtin.command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/peer-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/peer.json
   tags:
     - etcd
 
 - name: Parse peer cert
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   ansible.builtin.set_fact:
     etcd_generated_peer_cert: "{{ generated_peer_cert.stdout | from_json }}"
   tags:
     - etcd
 
 - name: Write peer cert
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   notify:
     - Restart etcd
   ansible.builtin.copy:
@@ -108,7 +115,8 @@
     - etcd
 
 - name: Write peer key
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
   notify:
     - Restart etcd
   ansible.builtin.copy:
@@ -121,8 +129,9 @@
     - etcd
 
 - name: Delete peer artifacts
-  when: (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
-  with_items:
+  when:
+    - (peer_cert_result.stat is defined and not peer_cert_result.stat.exists) or etcd_peer_cert_overwrite
+  loop:
     - /etc/etcd/pki/ca.json
     - /etc/etcd/pki/ca.key
     - /etc/etcd/pki/peer.json
@@ -152,7 +161,8 @@
     - etcd
 
 - name: Client CA json
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   ansible.builtin.copy:
     content: "{{ etcd_client_ca_config | to_json }}"
     dest: /etc/etcd/pki/ca.json
@@ -163,7 +173,8 @@
     - etcd
 
 - name: Client CA key
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   ansible.builtin.copy:
     content: "{{ etcd_client_ca_key }}"
     dest: /etc/etcd/pki/ca.key
@@ -174,7 +185,8 @@
     - etcd
 
 - name: Client cert json
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   ansible.builtin.copy:
     content: "{{ etcd_client_config | to_json }}"
     dest: /etc/etcd/pki/client.json
@@ -185,21 +197,26 @@
     - etcd
 
 - name: Generate client cert
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  ansible.builtin.command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/client-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/client.json
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   register: generated_client_cert
+  changed_when: false
+  failed_when: generated_client_cert.rc != 0
+  ansible.builtin.command: cfssl gencert -config=/etc/etcd/pki/ca.json -ca=/etc/etcd/pki/client-ca.crt -ca-key=/etc/etcd/pki/ca.key /etc/etcd/pki/client.json
   tags:
     - etcd
 
 - name: Parse client cert
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   ansible.builtin.set_fact:
     etcd_generated_client_cert: "{{ generated_client_cert.stdout | from_json }}"
   tags:
     - etcd
 
 - name: Write client cert
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   notify:
     - Restart etcd
   ansible.builtin.copy:
@@ -212,7 +229,8 @@
     - etcd
 
 - name: Write client key
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
   notify:
     - Restart etcd
   ansible.builtin.copy:
@@ -225,8 +243,9 @@
     - etcd
 
 - name: Delete client artifacts
-  when: (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
-  with_items:
+  when:
+    - (client_cert_result.stat is defined and not client_cert_result.stat.exists) or etcd_client_cert_overwrite
+  loop:
     - /etc/etcd/pki/ca.json
     - /etc/etcd/pki/ca.key
     - /etc/etcd/pki/client.json
@@ -264,9 +283,9 @@
   ansible.builtin.systemd:
     name: etcd
     state: started
-    daemon_reload: True
-    masked: False
-    enabled: True
+    daemon_reload: true
+    masked: false
+    enabled: true
   tags:
     - etcd
 

@@ -9,10 +9,10 @@ etcd_client_endpoints: []
 etcd_peer_address: 0.0.0.0
 
 # @var etcd_advertise_peer_address:description: Advertise peer address for this host
-etcd_advertise_peer_address: '{{ ansible_default_ipv4["address"] }}'
+etcd_advertise_peer_address: '{{ ansible_default_ipv4.address }}'
 
 # @var etcd_peer_cert_overwrite:description: Enforce new peer certificates on this host
-etcd_peer_cert_overwrite: False
+etcd_peer_cert_overwrite: false
 
 # @var etcd_peer_config:description: Client config for SSL certs by cfssl
 # @var etcd_peer_config:example: >
@@ -20,7 +20,7 @@ etcd_peer_cert_overwrite: False
 #   CN: '{{ inventory_hostname }}'
 #   hosts:
 #     - '{{ etcd_peer_address }}'
-#     - '{{ ansible_default_ipv4["address"] }}'
+#     - '{{ ansible_default_ipv4.address }}'
 #     - '{{ inventory_hostname }}.example.com'
 #   key:
 #     algo: rsa
@@ -49,10 +49,10 @@ etcd_peer_ca_config:
 etcd_client_address: 0.0.0.0
 
 # @var etcd_advertise_client_address:description: Advertise client address for this host
-etcd_advertise_client_address: '{{ ansible_default_ipv4["address"] }}'
+etcd_advertise_client_address: '{{ ansible_default_ipv4.address }}'
 
 # @var etcd_client_cert_overwrite:description: Enforce new client certificates on this host
-etcd_client_cert_overwrite: False
+etcd_client_cert_overwrite: false
 
 # @var etcd_client_config:description: Client confog for SSL certy by cfssl
 # @var etcd_client_config:example: >
@@ -60,7 +60,7 @@ etcd_client_cert_overwrite: False
 #   CN: '{{ inventory_hostname }}'
 #   hosts:
 #     - '{{ etcd_client_address }}'
-#     - '{{ ansible_default_ipv4["address"] }}'
+#     - '{{ ansible_default_ipv4.address }}'
 #     - '{{ inventory_hostname }}.example.com'
 #   key:
 #     algo: rsa
@@ -107,8 +107,7 @@ etcd_csr_config:
     algo: rsa
     size: 2048
   names:
-    -
-      C: '{{ etcd_csr_country }}'
+    - C: '{{ etcd_csr_country }}'
       ST: '{{ etcd_csr_state }}'
       L: '{{ etcd_csr_location }}'
       O: '{{ etcd_csr_org }}'
