@@ -1,6 +1,6 @@
 ---
 - name: Install required packages
-  loop: "{{ ['etcd'] if ansible_distribution_version is version('24.04', '<') else ['etcd-server', 'etcd-client'] }}"
+  loop: "{{ ['etcd'] if ansible_facts['distribution_version'] is version('24.04', '<') else ['etcd-server', 'etcd-client'] }}"
   ansible.builtin.package:
     name: "{{ item }}"
     state: present

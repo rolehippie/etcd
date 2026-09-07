@@ -11,7 +11,7 @@
       CN: "{{ inventory_hostname }}"
       hosts:
         - "{{ etcd_peer_address }}"
-        - "{{ ansible_default_ipv4.address }}"
+        - "{{ ansible_facts['default_ipv4'].address }}"
       key:
         algo: rsa
         size: 2048
@@ -67,7 +67,7 @@
       CN: "{{ inventory_hostname }}"
       hosts:
         - "{{ etcd_client_address }}"
-        - "{{ ansible_default_ipv4.address }}"
+        - "{{ ansible_facts['default_ipv4'].address }}"
       key:
         algo: rsa
         size: 2048
